@@ -19,7 +19,7 @@ export default function Onboarding() {
   const [incomeType, setIncomeType] = useState<"salary" | "business" | "freelance" | "other">("salary");
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [primaryGoal, setPrimaryGoal] = useState<"rent" | "emergency" | "education" | "business" | "other">("emergency");
-  const [accountType, setAccountType] = useState<"momo" | "bank" | "none">("none");
+  const [accountType, setAccountType] = useState<"mtn" | "vodafone" | "airteltigo" | "bank" | "manual">("manual");
   const [aiMessage, setAiMessage] = useState("");
 
   const handleSubmit = async () => {
@@ -58,7 +58,7 @@ export default function Onboarding() {
           income_type: incomeType,
           monthly_income: parseFloat(monthlyIncome),
           primary_goal: primaryGoal,
-          account_linked: accountType !== "none",
+          account_linked: accountType !== "manual",
           account_type: accountType,
           onboarding_completed: true,
         });
@@ -230,20 +230,25 @@ export default function Onboarding() {
             <div className="space-y-4">
               <div className="grid gap-3">
                 {[
-                  { value: "momo", label: "Mobile Money", desc: "MTN, Vodafone, AirtelTigo" },
-                  { value: "bank", label: "Bank Account", desc: "Link your bank" },
-                  { value: "none", label: "Skip for now", desc: "Manual tracking only" },
+                  { value: "mtn", label: "MTN Mobile Money", desc: "Link your MTN MoMo account", emoji: "📱" },
+                  { value: "vodafone", label: "Vodafone Cash", desc: "Link your Vodafone account", emoji: "📱" },
+                  { value: "airteltigo", label: "AirtelTigo Money", desc: "Link your AirtelTigo account", emoji: "📱" },
+                  { value: "bank", label: "Bank Account", desc: "Link your bank account", emoji: "🏦" },
+                  { value: "manual", label: "Manual Tracking", desc: "Track expenses manually", emoji: "✍️" },
                 ].map((option) => (
                   <Button
                     key={option.value}
                     variant={accountType === option.value ? "default" : "outline"}
                     onClick={() => setAccountType(option.value as any)}
-                    className={`h-auto p-4 flex flex-col items-start gap-1 ${
+                    className={`h-auto p-4 flex items-center gap-3 text-left ${
                       accountType === option.value ? "gradient-primary" : ""
                     }`}
                   >
-                    <span className="font-semibold">{option.label}</span>
-                    <span className="text-xs opacity-80">{option.desc}</span>
+                    <span className="text-2xl">{option.emoji}</span>
+                    <div className="flex-1">
+                      <div className="font-semibold">{option.label}</div>
+                      <div className="text-xs opacity-80">{option.desc}</div>
+                    </div>
                   </Button>
                 ))}
               </div>
