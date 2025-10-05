@@ -22,7 +22,7 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -40,7 +40,10 @@ const Auth = () => {
         description: "Your account has been created successfully.",
       });
       
-      navigate("/onboarding");
+      // Only navigate if user session is established
+      if (data.user) {
+        navigate("/onboarding");
+      }
     } catch (error: any) {
       toast({
         title: "Sign up failed",

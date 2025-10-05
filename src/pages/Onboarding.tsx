@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ export default function Onboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   // Form data
   const [fullName, setFullName] = useState("");
@@ -21,6 +22,25 @@ export default function Onboarding() {
   const [primaryGoal, setPrimaryGoal] = useState<"rent" | "emergency" | "education" | "business" | "other">("emergency");
   const [accountType, setAccountType] = useState<"mtn" | "vodafone" | "airteltigo" | "bank" | "manual">("manual");
   const [aiMessage, setAiMessage] = useState("");
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
+      
+      // Pre-fill name if available
+      if (user.user_metadata?.full_name) {
+        setFullName(user.user_metadata.full_name);
+      }
+      
+      setCheckingAuth(false);
+    };
+
+    checkAuth();
+  }, [navigate]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -302,6 +322,14 @@ export default function Onboarding() {
         );
     }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen gradient-mesh flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen gradient-mesh flex items-center justify-center p-4">
