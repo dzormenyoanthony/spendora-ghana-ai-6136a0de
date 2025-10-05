@@ -10,17 +10,22 @@ import {
   MessageCircle, 
   Receipt, 
   Target, 
-  CreditCard, 
   TrendingUp, 
-  User as UserIcon,
   LogOut,
   Wallet,
-  PlusCircle
+  PlusCircle,
+  Bell,
+  Lightbulb,
+  Settings
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ExpenseForm } from "@/components/ExpenseForm";
 import { BudgetOverview } from "@/components/BudgetOverview";
 import { ExpenseList } from "@/components/ExpenseList";
+import FinBuddyChat from "@/components/FinBuddyChat";
+import GoalsTracking from "@/components/GoalsTracking";
+import InsightsPanel from "@/components/InsightsPanel";
+import NotificationsPanel from "@/components/NotificationsPanel";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -101,14 +106,14 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         <Tabs defaultValue="home" className="w-full">
-          <TabsList className="grid w-full grid-cols-7 mb-6">
+          <TabsList className="grid w-full grid-cols-6 mb-6">
             <TabsTrigger value="home" className="flex flex-col items-center gap-1 py-2">
               <Home className="h-4 w-4" />
               <span className="text-xs">Home</span>
             </TabsTrigger>
             <TabsTrigger value="chat" className="flex flex-col items-center gap-1 py-2">
               <MessageCircle className="h-4 w-4" />
-              <span className="text-xs">Chat</span>
+              <span className="text-xs">FinBuddy</span>
             </TabsTrigger>
             <TabsTrigger value="transactions" className="flex flex-col items-center gap-1 py-2">
               <Receipt className="h-4 w-4" />
@@ -118,17 +123,13 @@ const Dashboard = () => {
               <Target className="h-4 w-4" />
               <span className="text-xs">Goals</span>
             </TabsTrigger>
-            <TabsTrigger value="loans" className="flex flex-col items-center gap-1 py-2">
-              <CreditCard className="h-4 w-4" />
-              <span className="text-xs">Loans</span>
+            <TabsTrigger value="insights" className="flex flex-col items-center gap-1 py-2">
+              <Lightbulb className="h-4 w-4" />
+              <span className="text-xs">Insights</span>
             </TabsTrigger>
-            <TabsTrigger value="invest" className="flex flex-col items-center gap-1 py-2">
-              <TrendingUp className="h-4 w-4" />
-              <span className="text-xs">Invest</span>
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="flex flex-col items-center gap-1 py-2">
-              <UserIcon className="h-4 w-4" />
-              <span className="text-xs">Profile</span>
+            <TabsTrigger value="notifications" className="flex flex-col items-center gap-1 py-2">
+              <Bell className="h-4 w-4" />
+              <span className="text-xs">Alerts</span>
             </TabsTrigger>
           </TabsList>
 
@@ -167,54 +168,35 @@ const Dashboard = () => {
 
           {/* Chat Tab */}
           <TabsContent value="chat">
-            <Card>
-              <CardHeader>
-                <CardTitle>AI Finance Coach</CardTitle>
-                <CardDescription>
-                  Get instant advice on your finances. Ask me anything in English or Twi!
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-96 flex items-center justify-center text-muted-foreground">
-                  <div className="text-center space-y-4">
-                    <MessageCircle className="h-16 w-16 mx-auto text-primary" />
-                    <p className="text-lg font-medium">AI Chat Coming Soon!</p>
-                    <p className="text-sm max-w-md">
-                      Your personal finance coach will help you make smart money decisions, 
-                      track spending, and reach your goals faster.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <FinBuddyChat />
           </TabsContent>
 
           {/* Transactions Tab */}
           <TabsContent value="transactions" className="space-y-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Transaction History</h2>
+              <Button onClick={() => setExpenseDialogOpen(true)} className="gradient-primary">
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Add Expense
+              </Button>
+            </div>
             <ExpenseList refreshTrigger={refreshTrigger} />
           </TabsContent>
 
-          {/* Other Tabs - Placeholder for now */}
-          {["goals", "loans", "invest", "profile"].map((tab) => (
-            <TabsContent key={tab} value={tab}>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="capitalize">{tab}</CardTitle>
-                  <CardDescription>
-                    {tab === "goals" && "Set and achieve your financial goals"}
-                    {tab === "loans" && "Access responsible borrowing options"}
-                    {tab === "invest" && "Grow your wealth with smart investments"}
-                    {tab === "profile" && "Manage your account settings"}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64 flex items-center justify-center text-muted-foreground">
-                    <p>This feature is coming in the next phase!</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          ))}
+          {/* Goals Tab */}
+          <TabsContent value="goals">
+            <GoalsTracking />
+          </TabsContent>
+
+          {/* Insights Tab */}
+          <TabsContent value="insights">
+            <InsightsPanel />
+          </TabsContent>
+
+          {/* Notifications Tab */}
+          <TabsContent value="notifications">
+            <NotificationsPanel />
+          </TabsContent>
         </Tabs>
       </div>
 
