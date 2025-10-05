@@ -18,12 +18,17 @@ import {
   PlusCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ExpenseForm } from "@/components/ExpenseForm";
+import { BudgetOverview } from "@/components/BudgetOverview";
+import { ExpenseList } from "@/components/ExpenseList";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     // Check if user is authenticated
@@ -129,44 +134,19 @@ const Dashboard = () => {
 
           {/* Home Tab */}
           <TabsContent value="home" className="space-y-6">
-            <Card className="gradient-primary text-white">
-              <CardHeader>
-                <CardTitle>Total Balance</CardTitle>
-                <CardDescription className="text-white/80">Your safe to spend amount</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-4xl font-bold">GH₵ 0.00</div>
-                <p className="text-sm text-white/70 mt-2">Connect your account to start tracking</p>
-              </CardContent>
-            </Card>
+            <BudgetOverview key={refreshTrigger} />
 
             <div className="grid md:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">This Month</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Income</span>
-                    <span className="font-semibold text-success">+GH₵ 0</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Expenses</span>
-                    <span className="font-semibold text-destructive">-GH₵ 0</span>
-                  </div>
-                  <div className="flex justify-between items-center pt-2 border-t">
-                    <span className="text-sm font-medium">Saved</span>
-                    <span className="font-bold text-primary">GH₵ 0</span>
-                  </div>
-                </CardContent>
-              </Card>
-
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button 
+                    className="w-full justify-start" 
+                    variant="outline"
+                    onClick={() => setExpenseDialogOpen(true)}
+                  >
                     <PlusCircle className="h-4 w-4 mr-2" />
                     Add Expense
                   </Button>
@@ -180,6 +160,8 @@ const Dashboard = () => {
                   </Button>
                 </CardContent>
               </Card>
+
+              <ExpenseList refreshTrigger={refreshTrigger} />
             </div>
           </TabsContent>
 
@@ -207,14 +189,18 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
 
+          {/* Transactions Tab */}
+          <TabsContent value="transactions" className="space-y-6">
+            <ExpenseList refreshTrigger={refreshTrigger} />
+          </TabsContent>
+
           {/* Other Tabs - Placeholder for now */}
-          {["transactions", "goals", "loans", "invest", "profile"].map((tab) => (
+          {["goals", "loans", "invest", "profile"].map((tab) => (
             <TabsContent key={tab} value={tab}>
               <Card>
                 <CardHeader>
                   <CardTitle className="capitalize">{tab}</CardTitle>
                   <CardDescription>
-                    {tab === "transactions" && "Track all your income and expenses"}
                     {tab === "goals" && "Set and achieve your financial goals"}
                     {tab === "loans" && "Access responsible borrowing options"}
                     {tab === "invest" && "Grow your wealth with smart investments"}
@@ -231,6 +217,12 @@ const Dashboard = () => {
           ))}
         </Tabs>
       </div>
+
+      <ExpenseForm 
+        open={expenseDialogOpen}
+        onOpenChange={setExpenseDialogOpen}
+        onExpenseAdded={() => setRefreshTrigger(prev => prev + 1)}
+      />
     </div>
   );
 };
