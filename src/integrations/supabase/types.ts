@@ -14,7 +14,99 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      budgets: {
+        Row: {
+          ai_message: string | null
+          created_at: string
+          id: string
+          needs_budget: number
+          savings_budget: number
+          updated_at: string
+          user_id: string
+          wants_budget: number
+        }
+        Insert: {
+          ai_message?: string | null
+          created_at?: string
+          id?: string
+          needs_budget: number
+          savings_budget: number
+          updated_at?: string
+          user_id: string
+          wants_budget: number
+        }
+        Update: {
+          ai_message?: string | null
+          created_at?: string
+          id?: string
+          needs_budget?: number
+          savings_budget?: number
+          updated_at?: string
+          user_id?: string
+          wants_budget?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_finances: {
+        Row: {
+          account_linked: boolean | null
+          account_type: string | null
+          created_at: string
+          id: string
+          income_type: string
+          monthly_income: number
+          onboarding_completed: boolean | null
+          primary_goal: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_linked?: boolean | null
+          account_type?: string | null
+          created_at?: string
+          id?: string
+          income_type: string
+          monthly_income: number
+          onboarding_completed?: boolean | null
+          primary_goal: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_linked?: boolean | null
+          account_type?: string | null
+          created_at?: string
+          id?: string
+          income_type?: string
+          monthly_income?: number
+          onboarding_completed?: boolean | null
+          primary_goal?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -40,7 +40,7 @@ const Auth = () => {
         description: "Your account has been created successfully.",
       });
       
-      navigate("/dashboard");
+      navigate("/onboarding");
     } catch (error: any) {
       toast({
         title: "Sign up failed",
@@ -68,8 +68,22 @@ const Auth = () => {
         title: "Welcome back! 👋",
         description: "You've successfully signed in.",
       });
-      
-      navigate("/dashboard");
+
+      // Check if user needs onboarding
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: financeData } = await supabase
+          .from("user_finances")
+          .select("onboarding_completed")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (!financeData?.onboarding_completed) {
+          navigate("/onboarding");
+        } else {
+          navigate("/dashboard");
+        }
+      }
     } catch (error: any) {
       toast({
         title: "Sign in failed",
